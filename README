@@ -1,0 +1,158 @@
+README - MATEESCU CRISTINA-RAMONA, 321CB - TEMA_3
+
+	Observatie : rularea dureaza destul de mult.
+
+	Functia "get_ip" - scrisa la laborator - pentru rezolvarea ip-ului pentru un host dat
+		
+		- Set hints : Setam familia si tipul de socket
+		- Get addresses : Folosim un apel al functiei getaddrinfo
+		- Iteram prin adrese, ultima adresa va fi ip-ul cautat
+		- Copiem ip-ul gasit in adresa data ca parametru - transmitem ip-ul prin efecte laterale
+		- Eliberare memorie alocata
+
+	Functiile : compute_get_request, compute_post_request scrise la laborator 
+		
+		- compute_get_request : se urmaresc pasii : 
+			1. GET, url, tip protocol
+			2. Host
+			3. Headere
+			4. Linie de final de antet
+
+		- compute_post_request : se urmaresc pasii :
+			1. POST, url, tip protocol
+			2. Host
+			3. Headere
+			4. Linie de final de antet
+			5. Body
+	
+
+	Main : 
+	
+			
+
+		 -- TASK 1 -- 
+
+	Se completeaza variabilele locale : Ip-ul hostului (host_ip), Url-ul, Portului (porno), Ip-type si socket-type
+	Task-ul 1 presupune trimiterea unei cereri simple de tip GET : 
+			
+		- Se deschide conexiunea
+		- Se creeaza mesajul : cerere de get; folosim functia "compute_get_request" - scrisa la laborator ; 
+				       functia se afla in sursa : requests.c
+		- Se trimite mesajul la server
+		- Se primeste raspunsul de la server
+		- Se inchide conexiunea
+
+		
+		-- TASK 2 -- 
+
+	Pentru a trimite cererea tip POST este necesara parsarea continutului raspunsului de la server : 
+	Parsare raspuns : 
+		
+		- Se numara liniile din anetul raspunsului ce contin Cookie-urile : pentru a aloca
+		  dinamic memorie pentru un vector de cookie-uri
+		- Parsarea raspunsului se face dupa linii : se sparge raspunsul, folosind "strtok" ;
+		  Liniile ce contin cookie-uri se pastreaza in vectorul alocat
+		- Ultima linie parsata va contine body-ul raspunsului
+		- Pentru usurarea lucrului cu cookie-urile, acestea se concateneaza intr-un singur string, 
+		  respectand restrictiile de format; Se elibereaza vectorul de cookie-uri -> ramane doar stringul
+	
+	Parsare enunt : 
+		
+		- Pentru parsarea Json s-a folosit biblioteca sugerata in Enunt : Parson
+		- Din stringul cu continutul se parseaza o Valoare de tip Json, care este transformata intr-un obiect
+		 de tip Json;
+		- Acest obiect se foloseste pentru a extrage valorile asociate cheilor : url, method, type, data
+		- Pentru a extrage valorile din campul data : folosim un contor in care retinem cate obiecte
+		contine campul data, apoi parcurgem dupa indice pentru a extrage pe rand fiecare valoare; La fel ca
+		la Cookies - valorile se stocheaza initial intr-un vector alocat dinamic, apoi se concateneaza intr-un
+		singur string; Se elibereaza memoria vectorului;
+		
+	Trimitere cerere :
+		
+		- Se repeta pasii : se deschide conexiunea,  se creeaza cererea tip POST cu argumentele parsate, 			  se trimite mesajul, se asteapta raspunsul de la server, se inchide conexiunea;
+		- Pentru crearea cererii de tip POST se foloseste de asemenea o functie din sursa "requests.c"
+
+	Eliberare memorie alocata;
+
+
+
+		-- TASK 3 -- 
+
+	Parsare raspuns :
+
+		- raspunsul se parseaza in aceeasi maniera : dupa linii; se stocheaza cookie-urile
+
+	Parsare enunt : 
+		
+		- Folosim obiectul principal pentru a extrage valorile asociate cheilor : url, method, data
+		- Campul data contine o valoare si un obiect; Ele sunt parsate astfel : daca se poate parsa
+		campul intr-o valoare, atunci acesta este campul ce contine tokenul folosit in linia de autorizatie; 
+		daca nu se poate parsa intr-o valoare, atunci el se va parsa ca un obiect; Valorile sale vor fi
+		extrase dupa numarul lor, printr-o parcurgere dupa indice a valorilor obiectului; valorile rezultate
+		sunt stocate intr-un vector alocat dinamic, apoi concatenate intr-un string ce reprezinta parametrii
+		ce trebuie atasati url-ului;
+
+	Trimitere cerere : 
+		
+		- Se deschide o noua conexiune
+		- Cererea de tip get contine pentru acest task, in plus : parametrii url, tokenul de autorizare
+		  (adaugat in antet )
+		- Se trimite mesajul, se asteapta raspunsul de la server, se inchide conexiunea;
+	
+
+		
+		-- TASK 4 -- 
+
+	Parsare raspuns :
+
+		- raspunsul se parseaza in aceeasi maniera : dupa linii; se stocheaza cookie-urile
+
+
+	Parsare enunt : 
+		
+		- Folosim obiectul principal pentru a extrage valorile asociate cheilor : url, method
+
+	Trimitere cerere : 
+		
+		- Se deschide o noua conexiune, se creeaza cererea de tip GET, folosind tokenul de autorizare 
+		  la taskul precedent
+		- Se trimite mesajul, se asteapta raspunsul de la server, se inchide conexiunea;	
+
+	
+		-- TASK 5 --
+
+	Parsare raspuns :
+
+		- raspunsul se parseaza in aceeasi maniera : dupa linii; se stocheaza cookie-urile
+
+	Parsare enunt : 
+		
+		- Folosim obiectul principal pentru a extrage valorile asociate cheilor : url, method, type;
+		- Extragem campuri din "data" : method, url, queryParams
+		- Pentru queryParams : se itereaza dupa contorul obiectelor; se concateneaza
+
+	Parsare url : 
+		
+		- Pentru determinarea Ip-ului folosim functia scrisa la laborator : get_ip 
+		- Se separa host-ul de url; se determina ip-ul hostului
+	
+	Trimitere cerere GET :
+		
+		- Se urmeaza pasii : deschiderea conexiunii, crearea mesajului, trimitere, asteptare raspuns, inchidere conexiune
+		
+	Parsare raspuns : 
+		
+		- Se extrage doar body-ul raspunsului de la server
+
+	Trimitere cerere POST :
+		
+		- Se urmeaza pasii : deschiderea conexiunii, crearea mesajului, trimitere, asteptare raspuns, inchidere conexiune
+		- Se adauga body-ul din raspunsul anterior ( cererea de vreme ) 
+
+	Eliberare memorie;
+
+	
+
+	
+
+	
